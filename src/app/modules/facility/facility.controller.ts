@@ -6,7 +6,7 @@ import { FacilityService } from './facility.service';
 
 
 
-// Handler to create a new student
+
 const createFacility: RequestHandler = catchAsync(async (req, res) => {
     const FacilityData = req.body; // Extract student data from request body
 
@@ -54,9 +54,25 @@ const createFacility: RequestHandler = catchAsync(async (req, res) => {
     });
   });
   
+  const updateFacility = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body; // Extract updateData from the request body
+  
+    const result = await FacilityService.updateFacilityFromDB(id, updateData);
+  
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Facility updated successfully',
+      data: result,
+    });
+  });
+  
+  
 
 export const facilityController = {
     createFacility,
     getFacility,
     deleteFacility,
+    updateFacility,
 };

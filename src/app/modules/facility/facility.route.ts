@@ -15,4 +15,6 @@ router.post(
 router.get('/', facilityController.getFacility);
 router.delete('/:id', facilityController.deleteFacility);
 
+router.put('/:id', facilityController.updateFacility);
+
 export const facilityRoutes = router;
