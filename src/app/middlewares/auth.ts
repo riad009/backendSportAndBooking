@@ -1,45 +1,37 @@
 import { NextFunction, Request, Response } from 'express';
-
-import catchAsync from '../utils/catchAsync';
+import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 
+import { TUserRole } from '../modules/user/user.interface';
+import { User } from '../modules/user/user.model';
+import catchAsync from '../utils/catchAsync';
+import AppError from '../error/Apperror';
 
-
-const auth = () => {
-  return catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-    // await schema.parseAsync({
-    //   body: req.body,
-    //   cookies: req.cookies,
-    // });
-
-    // if the toekn is send from the client
+const auth = (...requiredRoles: TUserRole[]) => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 
     if (!token) {
-      return res.status(401).json({ error: 'Token not sent' });
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
     }
 
-    // check the token is match
-    // invalid token
-    jwt.verify(
+    // checking if the given token is valid
+    const decoded = jwt.verify(
       token,
       config.JWT_ACCESS_SECRET as string,
-      function (err, decoded) {
-        if (err) {
-          return res
-            .status(401)
-            .json({ error: 'Unauthorized: you are Unauthorized' });
-        }
+    ) as JwtPayload;
 
-        req.user = decoded as JwtPayload;
+    const { role, userId, iat } = decoded;
 
-        console.log('decoded', decoded);
-        // decoded undefined
-      },
-    );
+    if (requiredRoles && !requiredRoles.includes(role)) {
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        'You are not authorized  hi!',
+      );
+    }
 
+    req.user = decoded as JwtPayload;
     next();
   });
 };

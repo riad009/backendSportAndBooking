@@ -8,22 +8,16 @@ import { FacilityService } from './facility.service';
 
 // Handler to create a new student
 const createFacility: RequestHandler = catchAsync(async (req, res) => {
-    const studentData = req.body; // Extract student data from request body
+    const FacilityData = req.body; // Extract student data from request body
 
-    console.log('studentData',studentData)
-    const result = await FacilityService.createFacilityInDB(studentData);
+    console.log('studentData',FacilityData)
+    const result = await FacilityService.createFacilityInDB(FacilityData);
    
-    // sendResponse(res, {
-    //   statusCode: httpStatus.CREATED,
-    //   success: true,
-    //   message: 'Facility is created successfully',
-    //   data: result,
-    // });
     sendResponse(res, {
       statusCode: 200, // Include statusCode in the response
       success: true,
-      message: 'User logged in successfully',
-      // token: "JWT_TOKEN",
+      message: 'Facility added successfully',
+     
       data: {
         _id: result._id,
         name: result.name,

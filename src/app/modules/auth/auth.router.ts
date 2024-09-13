@@ -8,13 +8,13 @@ const router = Router();
 
 router.post(
   "/login",
-  auth(),
+
   AuthControllers.loginUser
 );
 
 router.post(
   "/signup",
-  auth(),
+ 
   AuthControllers.signupUser
 );
 
