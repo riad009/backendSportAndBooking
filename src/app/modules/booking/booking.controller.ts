@@ -64,21 +64,17 @@ const createBooking: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getBooking: RequestHandler = catchAsync(async (req, res) => {
+    const user_id = req.user?._id;
+    // Note: The 'facility' variable seems to be unused here. Consider removing if not needed.
+    const facility = req.user?.facility;
 
-  const user_id = req.user?._id;
-  const facility = req.user?.facility;
-  
+    // Get bookings from the service
+    const result = await Bookingservice.getAllBookingInDb(user_id);
 
-
-  const result = await Bookingservice.getAllBookingInDb(user_id);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Bookings retrieved successfully',
-    data: result,
-  });
+    // Directly send the result from the service without additional wrapping
+    sendResponse(res, result); // Assuming sendResponse formats and sends the response appropriately
 });
+
 
 export const bookingController = {
   createBooking,
