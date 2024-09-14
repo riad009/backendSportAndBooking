@@ -2,12 +2,12 @@ import { Document, Model, Types } from 'mongoose';
 
 // Define the TBooking interface
 export interface TBooking extends Document {
-  date: Date; // The date of the booking
-  startTime: Date; // The start time of the booking
-  endTime: Date; // The end time of the booking
-  user: Types.ObjectId; // Reference to the user who made the booking
-  facility: Types.ObjectId; // Reference to the booked facility
-  payableAmount: number; // The calculated amount payable for the booking
+  date: String; // The date of the booking
+  startTime: String; // The start time of the booking
+  endTime: String; // The end time of the booking
+  user: String; // Reference to the user who made the booking
+  facility: String; // Reference to the booked facility
+  payableAmount: String; // The calculated amount payable for the booking
   isBooked: 'confirmed' | 'unconfirmed' | 'canceled'; // Status of the booking
 }
 

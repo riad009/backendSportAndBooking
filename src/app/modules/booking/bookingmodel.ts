@@ -3,13 +3,13 @@ import { TBooking } from './booking.interface';
 
 // Define the schema for the Booking model
 const bookingSchema = new Schema<TBooking>({
-  date: { type: Date, required: true },
-  startTime: { type: Date, required: true },
-  endTime: { type: Date, required: true },
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the User model
-  facility: { type: Schema.Types.ObjectId, ref: 'Facility', required: true }, // Reference to the Facility model
-  payableAmount: { type: Number, required: true },
-  isBooked: { type: String, enum: ['confirmed', 'unconfirmed', 'canceled'], required: true }
+  date: { type: String,},
+  startTime: { type: String, },
+  endTime: { type: String, },
+  user: { type: String }, // Reference to the User model
+  facility: { type: String, }, // Reference to the Facility model
+  payableAmount: { type: Number,  },
+  isBooked: { type: String, enum: ['confirmed', 'unconfirmed', 'canceled'], }
 });
 
 // Define the BookingModel interface

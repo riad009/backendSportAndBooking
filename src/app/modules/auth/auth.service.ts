@@ -18,10 +18,12 @@ const loginUser = async (payload: TLoginUser) => {
   // if password match then create JWT and send to the client
   const email = isUserExists.email;
   const role = isUserExists.role;
+  const _id = isUserExists._id;
   
   const jwtPayload = {
     email,
-    role
+    role,
+    _id
   };
   const accessToken = jwt.sign(jwtPayload, config.JWT_ACCESS_SECRET as string,
     {

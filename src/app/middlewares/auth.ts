@@ -13,7 +13,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     const token = req.headers.authorization;
 
     if (!token) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'token not given!');
     }
 
     // checking if the given token is valid
@@ -27,11 +27,12 @@ const auth = (...requiredRoles: TUserRole[]) => {
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
-        'You are not authorized  hi!',
+        'You are not authorized!',
       );
     }
 
     req.user = decoded as JwtPayload;
+    
     next();
   });
 };
