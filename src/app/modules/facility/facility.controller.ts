@@ -29,16 +29,25 @@ const createFacility: RequestHandler = catchAsync(async (req, res) => {
     });
   });
 
-  const getFacility: RequestHandler = catchAsync(async (req, res) => {
-    const result = await FacilityService.getAllFacilityInDb();
-  
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Facility are retrieved succesfully',
-      data: result,
+const getFacility: RequestHandler = catchAsync(async (req, res) => {
+  const result = await FacilityService.getAllFacilityInDb();
+
+  if (result.length === 0) {
+    return res.status(httpStatus.NOT_FOUND).json({
+      success: false,
+      statusCode: httpStatus.NOT_FOUND,
+      message: 'No Data Found',
+      data: [],
     });
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Facility are retrieved successfully',
+    data: result,
   });
+});
 
   const deleteFacility = catchAsync(async (req, res) => {
     const { id } = req.params;

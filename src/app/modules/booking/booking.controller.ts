@@ -52,7 +52,7 @@ const createBooking: RequestHandler = catchAsync(async (req, res) => {
   };
 
   const result = await Bookingservice.createBookingIntoDB(
-    bookingDataWithPayable,
+    bookingDataWithPayable as any,
   );
 
   sendResponse(res, {
@@ -64,30 +64,93 @@ const createBooking: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getBooking: RequestHandler = catchAsync(async (req, res) => {
-    const user_id = req.user?._id;
-    // Note: The 'facility' variable seems to be unused here. Consider removing if not needed.
-   
-    
-    // Get bookings from the service
-    const result = await Bookingservice.getAllBookingInDb(user_id);
-
-    // Directly send the result from the service without additional wrapping
-    sendResponse(res, result); // Assuming sendResponse formats and sends the response appropriately
+  const user_id = req.user?._id;
+  
+  // Get bookings from the service
+  const result = await Bookingservice.getAllBookingInDb(user_id);
+    console.log('result',result)
+  // Check if no bookings were found
+  if (result.data.length === 0) {
+      return res.status(httpStatus.NOT_FOUND).json({
+          success: false,
+          statusCode: httpStatus.NOT_FOUND,
+          message: 'No Data Found',
+          data: [],
+      });
+  }
+  
+  // Directly send the result from the service without additional wrapping
+  sendResponse(res, result); // Assuming sendResponse formats and sends the response appropriately
 });
+
 const getBookingByUser: RequestHandler = catchAsync(async (req, res) => {
-    const user_id = req.user?._id;
-    // Note: The 'facility' variable seems to be unused here. Consider removing if not needed.
+  const user_id = req.user?._id;
 
-    // Get bookings from the service
-    const result = await Bookingservice.getAllBookingByUserInDb(user_id);
+  // Get bookings from the service
+  const result = await Bookingservice.getAllBookingByUserInDb(user_id);
 
-    // Directly send the result from the service without additional wrapping
-    sendResponse(res, result); // Assuming sendResponse formats and sends the response appropriately
+  // Check if the result is empty
+  if (!result || result.data.length === 0) {
+      return res.status(404).json({
+          success: false,
+          statusCode: 404,
+          message: "No Data Found",
+          data: []
+      });
+  }
+
+  // Directly send the result if data exists
+  sendResponse(res, result); // Assuming sendResponse formats and sends the response appropriately
+});
+
+
+// Delete Booking Controller
+const deleteBooking: RequestHandler = catchAsync(async (req, res) => {
+  const user_id = req.user?._id; // Get the user ID from the request (auth middleware)
+  const bookingId = req.params.id; // Assuming the booking ID is passed in the request parameters
+  console.log('bookingId',bookingId)
+  // Delete the booking using the service
+  const result = await Bookingservice.deleteBookingInDb(user_id, bookingId);
+
+  // Send the result from the service directly
+  sendResponse(res, {
+    statusCode: 200, // Include statusCode in the response
+    success: true,
+    message: 'Facility added successfully',
+    data: result,
+  });
+});
+
+//
+
+const getbookingAvailability: RequestHandler = catchAsync(async (req, res) => {
+
+  const id= req.params
+  
+  const result = await Bookingservice.getbookingAvailabilityIntoDb(id as any);
+
+  if (result.data.length === 0) {
+    return res.status(httpStatus.NOT_FOUND).json({
+      success: false,
+      statusCode: httpStatus.NOT_FOUND,
+      message: 'No Data Found',
+      data: [],
+    });
+  }
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Facility are retrieved successfully',
+    data: result,
+  });
 });
 
 
 export const bookingController = {
   createBooking,
   getBooking,
-  getBookingByUser
+  getBookingByUser,
+  deleteBooking,
+  getbookingAvailability,
 };

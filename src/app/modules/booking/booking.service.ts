@@ -157,10 +157,65 @@ const getAllBookingByUserInDb = async (user_id: TBooking) => {
     }
 };
 
-  
+const deleteBookingInDb = async (user_id: string, bookingId: string) => {
+  try {
+    // Step 1: Find the booking by user ID and booking ID
+    const booking = await Booking.findOne({ _id: bookingId });
+
+    if (!booking) {
+      return {
+        success: false,
+        statusCode: 404,
+        message: "Booking not found",
+      };
+    }
+
+    // Step 2: Delete the booking
+    await Booking.deleteOne({ _id: bookingId });
+
+    // Return success response
+    return {
+      success: true,
+      statusCode: 200,
+      message: "Booking deleted successfully",
+    };
+  } catch (error) {
+    console.error('Error deleting booking:', error);
+    throw error;
+  }
+};
+const getbookingAvailabilityIntoDb = async (date: { time: string }) => {
+  console.log('Received date:', date);
+
+  // Extract the date from the provided object
+  const dateString = date.time;
+
+  // Perform the query to find bookings with the matching date
+  const bookings = await Booking.find({ date: dateString });
+
+  // Format the result to match the required structure
+  const formattedBookings = bookings.map(booking => ({
+    startTime: booking.startTime,
+    endTime: booking.endTime
+  }));
+
+  // Construct the response object
+  const response = {
+    success: true,
+    statusCode: 200,
+    message: "Availability checked successfully",
+    data: formattedBookings
+  };
+
+  return response;
+};
+
+
   
 export const Bookingservice = {
   createBookingIntoDB,
   getAllBookingInDb,
   getAllBookingByUserInDb,
+  deleteBookingInDb,
+  getbookingAvailabilityIntoDb,
 };

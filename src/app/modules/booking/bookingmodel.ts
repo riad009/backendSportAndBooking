@@ -18,4 +18,4 @@ export interface BookingModel extends Model<TBooking> {
 }
 
 // Create and export the Booking model
-export const Booking = model<TBooking, BookingModel>('Booking', bookingSchema);
+export const Booking = model<TBooking, BookingModel>('Bosoking', bookingSchema);

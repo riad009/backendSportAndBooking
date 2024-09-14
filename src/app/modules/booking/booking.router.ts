@@ -18,9 +18,19 @@ router.get(
     '/',
     auth(USER_ROLE.user),
     bookingController.getBooking);
+
+router.delete(
+    '/:id',
+    // auth(USER_ROLE.user),
+    bookingController.deleteBooking);
+
 router.get(
     '/user',
     auth(USER_ROLE.user),
     bookingController.getBookingByUser);
+router.get(
+     '/check-availability/:time',
+    // auth(USER_ROLE.user),
+    bookingController.getbookingAvailability);
 
 export const booking = router;

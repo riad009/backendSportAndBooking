@@ -20,6 +20,15 @@ const getSingleStudent = catchAsync(async (req, res) => {
 const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDB();
 
+  if (result.length === 0) {
+    return res.status(httpStatus.NOT_FOUND).json({
+      success: false,
+      statusCode: httpStatus.NOT_FOUND,
+      message: 'No Data Found',
+      data: [],
+    });
+  }
+  
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
