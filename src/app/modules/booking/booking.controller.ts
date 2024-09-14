@@ -66,10 +66,20 @@ const createBooking: RequestHandler = catchAsync(async (req, res) => {
 const getBooking: RequestHandler = catchAsync(async (req, res) => {
     const user_id = req.user?._id;
     // Note: The 'facility' variable seems to be unused here. Consider removing if not needed.
-    const facility = req.user?.facility;
-
+   
+    
     // Get bookings from the service
     const result = await Bookingservice.getAllBookingInDb(user_id);
+
+    // Directly send the result from the service without additional wrapping
+    sendResponse(res, result); // Assuming sendResponse formats and sends the response appropriately
+});
+const getBookingByUser: RequestHandler = catchAsync(async (req, res) => {
+    const user_id = req.user?._id;
+    // Note: The 'facility' variable seems to be unused here. Consider removing if not needed.
+
+    // Get bookings from the service
+    const result = await Bookingservice.getAllBookingByUserInDb(user_id);
 
     // Directly send the result from the service without additional wrapping
     sendResponse(res, result); // Assuming sendResponse formats and sends the response appropriately
@@ -79,4 +89,5 @@ const getBooking: RequestHandler = catchAsync(async (req, res) => {
 export const bookingController = {
   createBooking,
   getBooking,
+  getBookingByUser
 };

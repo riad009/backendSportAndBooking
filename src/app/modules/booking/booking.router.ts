@@ -18,5 +18,9 @@ router.get(
     '/',
     auth(USER_ROLE.user),
     bookingController.getBooking);
+router.get(
+    '/user',
+    auth(USER_ROLE.user),
+    bookingController.getBookingByUser);
 
 export const booking = router;
