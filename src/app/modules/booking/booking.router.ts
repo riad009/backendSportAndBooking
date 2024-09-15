@@ -16,21 +16,21 @@ router.post(
     bookingController.createBooking);
 router.get(
     '/',
-    auth(USER_ROLE.user),
+    auth(USER_ROLE.admin),
     bookingController.getBooking);
 
 router.delete(
     '/:id',
-    // auth(USER_ROLE.user),
+    auth(USER_ROLE.user),
     bookingController.deleteBooking);
 
 router.get(
     '/user',
     auth(USER_ROLE.user),
     bookingController.getBookingByUser);
-router.get(
-     '/check-availability/:time',
-    // auth(USER_ROLE.user),
-    bookingController.getbookingAvailability);
+// router.get(
+//      '/check-availability',
+//     // auth(USER_ROLE.user),
+//     bookingController.getbookingAvailability);
 
 export const booking = router;

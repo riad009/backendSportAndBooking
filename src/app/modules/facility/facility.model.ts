@@ -16,4 +16,4 @@ export interface FacilityModel extends Model<TFacility> {
 }
 
 // Create and export the Facility model
-export const Facility = model<TFacility, FacilityModel>('Facility', facilitySchema);
+export const Facility = model<TFacility, FacilityModel>('Facility3', facilitySchema);

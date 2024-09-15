@@ -26,4 +26,4 @@ export interface UserModel extends Model<TUser> {
 }
 
 // Create and export the User model
-export const User = model<TUser, UserModel>('Student', userSchema);
+export const User = model<TUser, UserModel>('user3', userSchema);

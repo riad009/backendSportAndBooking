@@ -49,56 +49,16 @@ const createBookingIntoDB = async (bookingDataWithPayable: TBooking) => {
 const getAllBookingInDb = async (user_id: TBooking) => {
     try {
         // Step 1: Find all bookings for the given user_id
-        const bookings = await Booking.find({ user: user_id });
+        const bookings = await Booking.find({  });
 
-        // Step 2: Find the user details for the given user_id
-        const user = await User.findOne({ _id: user_id });
 
-        // Extract facility IDs from the bookings
-        const facilityIds = bookings.map(booking => booking.facility);
-
-        // Step 3: Find all facilities for the given facility IDs
-        const facilities = await Facility.find({ _id: { $in: facilityIds } });
-
-        // Map facility IDs to facility objects for easy lookup
-        const facilityMap = new Map(facilities.map(facility => [facility._id.toString(), facility]));
-
-        // Format the bookings with their corresponding facility and user details
-        const formattedBookings = bookings.map(booking => {
-            const facility = facilityMap.get(booking.facility.toString()) || null;  // Handle missing facilities
-
-            return {
-                _id: booking._id,
-                facility: facility ? {
-                    _id: facility._id,
-                    name: facility.name,
-                    description: facility.description,
-                    pricePerHour: facility.pricePerHour,
-                    location: facility.location,
-                    isDeleted: facility.isDeleted
-                } : {},  // Return an empty object if facility is not found
-                date: booking.date,
-                startTime: booking.startTime,
-                endTime: booking.endTime,
-                user: {
-                    _id: user?._id || '',
-                    name: user?.name || '',
-                    email: user?.email || '',
-                    phone: user?.phone || '',
-                    role: user?.role || '',
-                    address: user?.address || ''
-                },
-                payableAmount: booking.payableAmount,
-                isBooked: booking.isBooked
-            };
-        });
-
+         
         // Return the formatted bookings
         return {
             success: true,
             statusCode: 200,
             message: "Bookings retrieved successfully",
-            data: formattedBookings
+            data: bookings
         };
     } catch (error) {
         console.error('Error fetching bookings or user:', error);
@@ -160,8 +120,13 @@ const getAllBookingByUserInDb = async (user_id: TBooking) => {
 const deleteBookingInDb = async (user_id: string, bookingId: string) => {
   try {
     // Step 1: Find the booking by user ID and booking ID
-    const booking = await Booking.findOne({ _id: bookingId });
-
+   
+    const booking = await Booking.findOneAndUpdate(
+      { _id: bookingId },
+      { isBooked: 'canceled' },
+      { new: true }
+    );
+    
     if (!booking) {
       return {
         success: false,
@@ -175,20 +140,19 @@ const deleteBookingInDb = async (user_id: string, bookingId: string) => {
 
     // Return success response
     return {
-      success: true,
-      statusCode: 200,
-      message: "Booking deleted successfully",
+     
+      data:booking
     };
   } catch (error) {
     console.error('Error deleting booking:', error);
     throw error;
   }
 };
-const getbookingAvailabilityIntoDb = async (date: { time: string }) => {
+const getbookingAvailabilityIntoDb = async (date: { date: string }) => {
   console.log('Received date:', date);
 
   // Extract the date from the provided object
-  const dateString = date.time;
+  const dateString = date.date;
 
   // Perform the query to find bookings with the matching date
   const bookings = await Booking.find({ date: dateString });
@@ -201,9 +165,7 @@ const getbookingAvailabilityIntoDb = async (date: { time: string }) => {
 
   // Construct the response object
   const response = {
-    success: true,
-    statusCode: 200,
-    message: "Availability checked successfully",
+
     data: formattedBookings
   };
 

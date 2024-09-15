@@ -58,7 +58,7 @@ const createBooking: RequestHandler = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: 200, // Include statusCode in the response
     success: true,
-    message: 'Facility added successfully',
+    message: 'Booking created successfully',
     data: result,
   });
 });
@@ -116,7 +116,7 @@ const deleteBooking: RequestHandler = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: 200, // Include statusCode in the response
     success: true,
-    message: 'Facility added successfully',
+    message: 'booking cancelled successfully',
     data: result,
   });
 });
@@ -125,24 +125,26 @@ const deleteBooking: RequestHandler = catchAsync(async (req, res) => {
 
 const getbookingAvailability: RequestHandler = catchAsync(async (req, res) => {
 
-  const id= req.params
-  
-  const result = await Bookingservice.getbookingAvailabilityIntoDb(id as any);
-
-  if (result.data.length === 0) {
-    return res.status(httpStatus.NOT_FOUND).json({
-      success: false,
-      statusCode: httpStatus.NOT_FOUND,
-      message: 'No Data Found',
-      data: [],
-    });
-  }
+  const params= req.params
+  const query= req.query
+    console.log('params',params)
+    console.log('query',query)
+  const result = await Bookingservice.getbookingAvailabilityIntoDb(query as any);
+  console.log('result',result)
+  // if (result.data.length === 0) {
+  //   return res.status(httpStatus.NOT_FOUND).json({
+  //     success: false,
+  //     statusCode: httpStatus.NOT_FOUND,
+  //     message: 'No Data Found',
+  //     data: [],
+  //   });
+  // }
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Facility are retrieved successfully',
-    data: result,
+    message: 'Availability are retrieved successfully',
+    data: result.data,
   });
 });
 

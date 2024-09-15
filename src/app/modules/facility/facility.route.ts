@@ -9,12 +9,16 @@ const router = express.Router();
 
 router.post(
     '/',
-    auth(USER_ROLE.user),
+    auth(USER_ROLE.admin),
     facilityController.createFacility);
     
 router.get('/', facilityController.getFacility);
-router.delete('/:id', facilityController.deleteFacility);
+router.delete('/:id',
+    auth(USER_ROLE.admin),
+    facilityController.deleteFacility);
 
-router.put('/:id', facilityController.updateFacility);
+router.put('/:id',
+    auth(USER_ROLE.admin),
+    facilityController.updateFacility);
 
 export const facilityRoutes = router;
