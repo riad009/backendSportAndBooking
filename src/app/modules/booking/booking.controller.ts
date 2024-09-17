@@ -122,24 +122,31 @@ const deleteBooking: RequestHandler = catchAsync(async (req, res) => {
 });
 
 //
+const getFormattedDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-based, so we add 1
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 
 const getbookingAvailability: RequestHandler = catchAsync(async (req, res) => {
+  const params = req.params;
+  let query = req.query;
 
-  const params= req.params
-  const query= req.query
-    console.log('params',params)
-    console.log('query',query)
+  // If no date is provided, use today's date
+  if (!query.date) {
+    query = { ...query, date: getFormattedDate() };
+  }
+
+  console.log('params', params);
+  console.log('query', query);
+
   const result = await Bookingservice.getbookingAvailabilityIntoDb(query as any);
-  console.log('result',result)
-  // if (result.data.length === 0) {
-  //   return res.status(httpStatus.NOT_FOUND).json({
-  //     success: false,
-  //     statusCode: httpStatus.NOT_FOUND,
-  //     message: 'No Data Found',
-  //     data: [],
-  //   });
-  // }
+  console.log('result', result);
 
+  // Response without checking for empty data (since you commented out the check)
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

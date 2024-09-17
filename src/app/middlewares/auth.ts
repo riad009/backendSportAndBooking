@@ -10,30 +10,33 @@ import AppError from '../error/Apperror';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
-      throw new AppError(httpStatus.UNAUTHORIZED, 'token not given!');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Token not provided or incorrect format!');
     }
 
-    // checking if the given token is valid
-    const decoded = jwt.verify(
-      token,
-      config.JWT_ACCESS_SECRET as string,
-    ) as JwtPayload;
+    // Extracting the token by removing 'Bearer ' prefix
+    const token = authHeader.split(' ')[1];
 
-    const { role, userId, iat } = decoded;
+    try {
+      // Verifying the token
+      const decoded = jwt.verify(token, config.JWT_ACCESS_SECRET as string) as JwtPayload;
 
-    if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        'You have no access to this route',
-      );
+      const { role, userId, iat } = decoded;
+
+      // Checking if the user's role is allowed for this route
+      if (requiredRoles.length && !requiredRoles.includes(role as TUserRole)) {
+        throw new AppError(httpStatus.FORBIDDEN, 'You have no access to this route');
+      }
+
+      // Storing user data in the request object
+      req.user = decoded;
+
+      next();
+    } catch (error) {
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid or expired token!');
     }
-    
-    req.user = decoded as JwtPayload;
-    
-    next();
   });
 };
 
